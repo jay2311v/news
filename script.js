@@ -10,9 +10,10 @@ function bindData(articles) {
   const newsCardTemplate = document.getElementById("template-news-card");
 
   cardsContainer.innerHTML = "";
-
+  if (!article.urlToImage){
+    return;
+  }
   articles.forEach((article) => {
-    if (!article.urlToImage) return;
     const cardClone = newsCardTemplate.content.cloneNode(true);
     fillDataCard(cardClone, article);
     cardsContainer.appendChild(cardClone);
@@ -23,7 +24,26 @@ async function fetchNews(query) {
   const data = await response.json();
   bindData(data.articles);
 }
+async function fetchNews(query) {
+  try {
+      const response = await fetch(`${API_URL}${query}&apiKey=${API_KEY}`);
+      
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
+      const data = await response.json();
+      console.log("API Response Data:", data);  // Log the response data
+
+      if (!data || !data.articles) {
+          console.error("No articles found in the API response:", data);
+          return;
+      }
+      bindData(data.articles);
+  } catch (error) {
+      console.error("Error fetching news:", error);
+  }
+}
 function fillDataCard(cardClone, article) {
   const newsImg = cardClone.querySelector("#news-img");
   const newsTitle = cardClone.querySelector("#news-title");
