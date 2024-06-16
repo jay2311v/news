@@ -5,11 +5,6 @@ window.addEventListener("load", () => fetchNews("India"));
 function reload() {
   window.location.reload();
 }
-async function fetchNews(query) {
-  const response = await fetch(`${API_URL}${query}&apiKey=${API_KEY}`);
-  const data = await response.json();
-  bindData(data.articles);
-}
 function bindData(articles) {
   const cardsContainer = document.getElementById("cards-container");
   const newsCardTemplate = document.getElementById("template-news-card");
@@ -22,6 +17,11 @@ function bindData(articles) {
     fillDataCard(cardClone, article);
     cardsContainer.appendChild(cardClone);
   });
+}
+async function fetchNews(query) {
+  const response = await fetch(`${API_URL}${query}&apiKey=${API_KEY}`);
+  const data = await response.json();
+  bindData(data.articles);
 }
 
 function fillDataCard(cardClone, article) {
